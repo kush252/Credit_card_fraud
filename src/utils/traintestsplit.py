@@ -3,7 +3,8 @@ from sklearn.model_selection import train_test_split
 
 
 def train_val_test_split(
-        df,
+        X,
+        y,
         target_col="Class",
         train_size=0.7,
         val_size=0.15,
@@ -14,8 +15,6 @@ def train_val_test_split(
     if train_size + val_size + test_size != 1.0:
         raise ValueError("Train, validation and test sizes must sum to 1")
 
-    X = df.drop(columns=[target_col])
-    y = df[target_col]
 
     # first split → train and temp
     X_train, X_temp, y_train, y_temp = train_test_split(
