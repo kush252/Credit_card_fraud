@@ -6,7 +6,7 @@ from utils.traintestsplit import train_val_test_split
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.metrics import roc_auc_score
+from sklearn.metrics import roc_auc_score,f1_score
 from xgboost import XGBClassifier
 
 
@@ -30,7 +30,8 @@ def objective(trial, best_name, X_train, y_train, X_val, y_val):
         params = {
             "n_estimators": trial.suggest_int("n_estimators", 100, 400),
             "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.2),
-            "max_depth": trial.suggest_int("max_depth", 3, 10)
+            "max_depth": trial.suggest_int("max_depth", 3, 10),
+            "random_state": 42
         }
 
         model = GradientBoostingClassifier(**params)
@@ -41,21 +42,26 @@ def objective(trial, best_name, X_train, y_train, X_val, y_val):
         params = {
             "C": trial.suggest_float("C", 1e-3, 10, log=True),
             "max_iter": 1000,
-            "class_weight": "balanced"
+            "class_weight": "balanced",
+            "random_state": 42
         }
 
         model = LogisticRegression(**params)
 
 
     elif best_name == "xgboost":
-
+        neg = (y_train == 0).sum()
+        pos = (y_train == 1).sum()
+        scale_pos_weight = neg / pos
         params = {
             "n_estimators": trial.suggest_int("n_estimators", 100, 500),
             "max_depth": trial.suggest_int("max_depth", 3, 10),
             "learning_rate": trial.suggest_float("learning_rate", 0.01, 0.3),
             "subsample": trial.suggest_float("subsample", 0.5, 1.0),
             "colsample_bytree": trial.suggest_float("colsample_bytree", 0.5, 1.0),
-            "eval_metric": "logloss"
+            "scale_pos_weight": scale_pos_weight,
+            "eval_metric": "logloss",
+            "random_state": 42
         }
 
         model = XGBClassifier(**params)
@@ -68,8 +74,10 @@ def objective(trial, best_name, X_train, y_train, X_val, y_val):
     probs = model.predict_proba(X_val)[:, 1]
 
     roc_auc = roc_auc_score(y_val, probs)
-
-    return roc_auc
+    f1 = f1_score(y_val, model.predict(X_val))
+    score = 0.4 * roc_auc + 0.6 * f1
+    
+    return score
 
 
 def tune_model():
@@ -81,13 +89,17 @@ def tune_model():
     )
 
     print("Best baseline model:", best_name)
-    study = optuna.create_study(direction="maximize")
+    study = optuna.create_study(direction="maximize",sampler=optuna.samplers.TPESampler(seed=42))
     study.optimize(
         lambda trial: objective(trial, best_name, X_train, y_train, X_val, y_val),
-        n_trials=50
+        n_trials=100
     )
 
-    print("Best ROC-AUC:", study.best_value)
+    print("Best ROC-AUC and F1 combined score:", study.best_value)
     print("Best parameters:", study.best_params)
 
     return best_name, study.best_params
+
+
+if __name__ == "__main__":
+    best_name, best_params = tune_model()
