@@ -1,12 +1,12 @@
 import optuna
 
-from model_selection import select_best_model
-from utils.dataloader import load_data
-from utils.traintestsplit import train_val_test_split
+from src.model_selection import select_best_model
+from src.utils.dataloader import load_data
+from src.utils.traintestsplit import train_val_test_split
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
-from sklearn.metrics import roc_auc_score,f1_score
+from sklearn.metrics import roc_auc_score,f1_score,average_precision_score
 from xgboost import XGBClassifier
 
 
@@ -75,9 +75,10 @@ def objective(trial, best_name, X_train, y_train, X_val, y_val):
 
     roc_auc = roc_auc_score(y_val, probs)
     f1 = f1_score(y_val, model.predict(X_val))
+    pr_auc = average_precision_score(y_val, probs)
     score = 0.4 * roc_auc + 0.6 * f1
     
-    return score
+    return pr_auc
 
 
 def tune_model(best_name=None, X_train=None, y_train=None, X_val=None, y_val=None):
@@ -87,10 +88,10 @@ def tune_model(best_name=None, X_train=None, y_train=None, X_val=None, y_val=Non
     study = optuna.create_study(direction="maximize",sampler=optuna.samplers.TPESampler(seed=42))
     study.optimize(
         lambda trial: objective(trial, best_name, X_train, y_train, X_val, y_val),
-        n_trials=100
+        n_trials=6
     )
 
-    print("Best ROC-AUC and F1 combined score:", study.best_value)
+    print("Best Average Precision-Recall score:", study.best_value)
     print("Best parameters:", study.best_params)
 
     return best_name, study.best_params

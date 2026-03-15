@@ -1,5 +1,5 @@
-from utils.dataloader import load_data
-from utils.traintestsplit import train_val_test_split
+from src.utils.dataloader import load_data
+from src.utils.traintestsplit import train_val_test_split
 
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
