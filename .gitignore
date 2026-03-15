@@ -1,3 +1,7 @@
 venv
 scaler.pkl
 data/*.csv
+models/*.pkl
+models/*.json
+models/*.joblib
+pycache/**/*
