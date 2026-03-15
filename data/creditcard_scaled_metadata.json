@@ -1,0 +1,42 @@
+{
+  "columns": [
+    "V1",
+    "V2",
+    "V3",
+    "V4",
+    "V5",
+    "V6",
+    "V7",
+    "V8",
+    "V9",
+    "V10",
+    "V11",
+    "V12",
+    "V13",
+    "V14",
+    "V15",
+    "V16",
+    "V17",
+    "V18",
+    "V19",
+    "V20",
+    "V21",
+    "V22",
+    "V23",
+    "V24",
+    "V25",
+    "V26",
+    "V27",
+    "V28",
+    "Class",
+    "scaled_amount",
+    "scaled_time"
+  ],
+  "imbalance": {
+    "class_0": 284315,
+    "class_1": 492,
+    "class_0_ratio": 0.9982725143693799,
+    "class_1_ratio": 0.001727485630620034
+  },
+  "filename": "creditcard_scaled.csv"
+}
