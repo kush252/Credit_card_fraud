@@ -41,7 +41,7 @@ def objective(trial, best_name, X_train, y_train, X_val, y_val):
 
         params = {
             "C": trial.suggest_float("C", 1e-3, 10, log=True),
-            "max_iter": 1000,
+            "max_iter": trial.suggest_int("max_iter", 500, 2000),
             "class_weight": "balanced",
             "random_state": 42
         }
@@ -80,15 +80,10 @@ def objective(trial, best_name, X_train, y_train, X_val, y_val):
     return score
 
 
-def tune_model():
+def tune_model(best_name=None, X_train=None, y_train=None, X_val=None, y_val=None):
 
-    X, y = load_data(r"D:\Kush\2nd Year\projects\MLOPs\data\creditcard_scaled.csv")
-    X_train, X_val, X_test, y_train, y_val, y_test = train_val_test_split(X, y)
-    best_name, best_model, results = select_best_model(
-        X_train, y_train, X_val, y_val
-    )
-
-    print("Best baseline model:", best_name)
+    #adding validation left
+    
     study = optuna.create_study(direction="maximize",sampler=optuna.samplers.TPESampler(seed=42))
     study.optimize(
         lambda trial: objective(trial, best_name, X_train, y_train, X_val, y_val),
@@ -102,4 +97,11 @@ def tune_model():
 
 
 if __name__ == "__main__":
-    best_name, best_params = tune_model()
+    X, y = load_data(r"D:\Kush\2nd Year\projects\MLOPs\data\creditcard_scaled.csv")
+    X_train, X_val, X_test, y_train, y_val, y_test = train_val_test_split(X, y)
+    best_name, results = select_best_model(
+        X_train, y_train, X_val, y_val
+    )
+
+    print("Best baseline model:", best_name)
+    best_name, best_params = tune_model(best_name, X_train, y_train, X_val, y_val)

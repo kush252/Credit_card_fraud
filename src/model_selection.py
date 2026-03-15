@@ -52,12 +52,12 @@ def select_best_model(X_train, y_train, X_val, y_val):
     best_name = max(results, key=lambda x: results[x]["roc_auc"])
     best_model = fitted_models[best_name]
 
-    return best_name, best_model, results
+    return best_name, results
 
 
 if __name__ == "__main__":
     X, y = load_data(r"D:\Kush\2nd Year\projects\MLOPs\data\creditcard_scaled.csv")
     X_train, X_val, X_test, y_train, y_val, y_test = train_val_test_split(X, y)
 
-    best_name, best_model, results = select_best_model(X_train, y_train, X_val, y_val)
+    best_name, results = select_best_model(X_train, y_train, X_val, y_val)
     print(f"Best Model: {best_name} with ROC-AUC: {results[best_name]['roc_auc']:.4f} and F1: {results[best_name]['f1']:.4f}")
