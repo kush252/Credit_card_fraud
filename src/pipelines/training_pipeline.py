@@ -1,17 +1,18 @@
-import sys 
-import os 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+import os
+
 from src.model_selection import select_best_model
 from src.utils.dataloader import load_data
 from src.utils.traintestsplit import train_val_test_split
 from src.hyperparameter import tune_model
+from src.utils.model_load_save import save_model
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import roc_auc_score,f1_score,average_precision_score,confusion_matrix
 from xgboost import XGBClassifier
 import numpy as np
-import joblib
-import json
+
+
 
 BASE_DIR = os.path.dirname(__file__)
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
@@ -65,11 +66,6 @@ print(f"Final {best_name} -> ROC-AUC: {roc_score:.4f} | F1: {f1:.4f} | PR-AUC: {
 confusion = confusion_matrix(y_test, predicted)
 print("Confusion Matrix:\n", confusion)
 
-
-joblib.dump(final_model, os.path.join(MODELS_DIR, "final_model.joblib"))
-
-
-
 metadata = {
     "model_name": best_name,
     "hyperparameters": best_params,
@@ -81,5 +77,5 @@ metadata = {
     }
 }
 
-with open(os.path.join(MODELS_DIR, "final_model_metadata.json"), "w") as f:
-    json.dump(metadata, f, indent=4)
+
+save_model(final_model, metadata, "final_model")
