@@ -5,3 +5,5 @@ models/*.pkl
 models/*.json
 models/*.joblib
 pycache/**/*
+
+node_modules
