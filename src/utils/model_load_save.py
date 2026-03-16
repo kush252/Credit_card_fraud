@@ -3,8 +3,11 @@ import json
 import joblib
 
 BASE_DIR = os.path.dirname(__file__)
-PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
+print("Base directory:", BASE_DIR)
+PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
+print("Project root:", PROJECT_ROOT)
 MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
+print("Models directory:", MODELS_DIR)
 os.makedirs(MODELS_DIR, exist_ok=True)
 
 def save_model(model, metadata: dict, model_name: str):
