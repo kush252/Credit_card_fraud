@@ -1,9 +1,9 @@
 import os
 
-from src.model_selection import select_best_model
+from src.workers.model_selection import select_best_model
 from src.utils.dataloader import load_data
 from src.utils.traintestsplit import train_val_test_split
-from src.hyperparameter import tune_model
+from src.workers.hyperparameter import tune_model
 from src.utils.model_load_save import save_model
 
 from sklearn.linear_model import LogisticRegression
@@ -11,15 +11,14 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import roc_auc_score,f1_score,average_precision_score,confusion_matrix
 from xgboost import XGBClassifier
 import numpy as np
+from config.config import get_config
 
 
+config = get_config()
+data_path = config["data_path"]
 
-BASE_DIR = os.path.dirname(__file__)
-PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
-MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
-os.makedirs(MODELS_DIR, exist_ok=True)
 
-X, y = load_data(r"D:\Kush\2nd Year\projects\MLOPs\data\creditcard_scaled.csv")
+X, y = load_data(data_path)
 X_train, X_val, X_test, y_train, y_val, y_test = train_val_test_split(X, y)
 
 
@@ -79,3 +78,4 @@ metadata = {
 
 
 save_model(final_model, metadata, "final_model")
+

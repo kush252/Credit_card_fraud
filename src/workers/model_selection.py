@@ -8,6 +8,9 @@ from sklearn.utils.class_weight import compute_class_weight
 from xgboost import XGBClassifier
 import numpy as np
 
+from config.config import get_config
+
+
 def select_best_model(X_train, y_train, X_val, y_val):
 
     classes = np.unique(y_train)
@@ -56,7 +59,9 @@ def select_best_model(X_train, y_train, X_val, y_val):
 
 
 if __name__ == "__main__":
-    X, y = load_data(r"D:\Kush\2nd Year\projects\MLOPs\data\creditcard_scaled.csv")
+    config = get_config()
+    data_path = config["data_path"]
+    X, y = load_data(data_path)
     X_train, X_val, X_test, y_train, y_val, y_test = train_val_test_split(X, y)
 
     best_name, results = select_best_model(X_train, y_train, X_val, y_val)

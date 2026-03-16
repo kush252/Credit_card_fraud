@@ -11,14 +11,13 @@ from sklearn.metrics import precision_recall_curve, roc_auc_score,f1_score,confu
 import joblib
 import json
 
-BASE_DIR = os.path.dirname(__file__)
-PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
-MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
-os.makedirs(MODELS_DIR, exist_ok=True)
+from config.config import get_config
 
-X, y = load_data(r"D:\Kush\2nd Year\projects\MLOPs\data\creditcard_scaled.csv")
+config = get_config()
+data_path = config["data_path"]
+
+X, y = load_data(data_path)
 X_train, X_val, X_test, y_train, y_val, y_test = train_val_test_split(X, y)
-
 
 model = LogisticRegression(max_iter=1000, class_weight="balanced", random_state=42)
 model.fit(X_train, y_train)

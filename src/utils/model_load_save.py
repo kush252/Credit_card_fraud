@@ -1,14 +1,11 @@
 import os
 import json
 import joblib
+from config.config import get_config
 
-BASE_DIR = os.path.dirname(__file__)
-print("Base directory:", BASE_DIR)
-PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, "..", ".."))
-print("Project root:", PROJECT_ROOT)
-MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
-print("Models directory:", MODELS_DIR)
-os.makedirs(MODELS_DIR, exist_ok=True)
+
+config = get_config()
+MODELS_DIR = config["model_folder"]
 
 def save_model(model, metadata: dict, model_name: str):
     model_path = os.path.join(MODELS_DIR, f"{model_name}.joblib")

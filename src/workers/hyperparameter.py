@@ -1,6 +1,6 @@
 import optuna
 
-from src.model_selection import select_best_model
+from src.workers.model_selection import select_best_model
 from src.utils.dataloader import load_data
 from src.utils.traintestsplit import train_val_test_split
 
@@ -8,6 +8,10 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import roc_auc_score,f1_score,average_precision_score
 from xgboost import XGBClassifier
+
+from config.config import get_config
+
+
 
 
 def objective(trial, best_name, X_train, y_train, X_val, y_val):
@@ -82,9 +86,6 @@ def objective(trial, best_name, X_train, y_train, X_val, y_val):
 
 
 def tune_model(best_name=None, X_train=None, y_train=None, X_val=None, y_val=None):
-
-    #adding validation left
-    
     study = optuna.create_study(direction="maximize",sampler=optuna.samplers.TPESampler(seed=42))
     study.optimize(
         lambda trial: objective(trial, best_name, X_train, y_train, X_val, y_val),
@@ -98,7 +99,10 @@ def tune_model(best_name=None, X_train=None, y_train=None, X_val=None, y_val=Non
 
 
 if __name__ == "__main__":
-    X, y = load_data(r"D:\Kush\2nd Year\projects\MLOPs\data\creditcard_scaled.csv")
+    config = get_config()
+    data_path = config["data_path"]
+
+    X, y = load_data(data_path)
     X_train, X_val, X_test, y_train, y_val, y_test = train_val_test_split(X, y)
     best_name, results = select_best_model(
         X_train, y_train, X_val, y_val
