@@ -72,10 +72,11 @@ metadata = {
         "roc_auc": roc_score,
         "f1_score": f1,
         "pr_auc": pr_score,
-        "confusion_matrix":confusion
+        "confusion_matrix": confusion.tolist()
     }
 }
 
+save_model(final_model, metadata, "final_model")
 
 save_model(final_model, metadata, "final_model")
 

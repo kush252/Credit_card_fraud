@@ -89,7 +89,7 @@ def tune_model(best_name=None, X_train=None, y_train=None, X_val=None, y_val=Non
     study = optuna.create_study(direction="maximize",sampler=optuna.samplers.TPESampler(seed=42))
     study.optimize(
         lambda trial: objective(trial, best_name, X_train, y_train, X_val, y_val),
-        n_trials=6
+        n_trials=7
     )
 
     print("Best Average Precision-Recall score:", study.best_value)
