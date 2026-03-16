@@ -2,8 +2,10 @@ from src.utils.model_load_save import load_model
 import json
 
 import pandas as pd
+from config.config import get_config    
 
-MODEL_NAME = "baseline_model"
+config = get_config()
+MODEL_NAME = config["model_name"]
 
 def predict(inputs:dict):
     
