@@ -107,13 +107,13 @@ export default function App() {
                 </p>
 
                 <div style={{ display: 'flex', gap: '1rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
-                    <button type="button" className="btn" style={{ background: '#3b82f6', width: 'auto', marginTop: 0 }} onClick={handleFillLegit}>
+                    <button type="button" className="btn" style={{ background: 'var(--primary)', width: 'auto', marginTop: 0 }} onClick={handleFillLegit}>
                         Load Normal Transaction
                     </button>
                     <button type="button" className="btn" style={{ background: '#ef4444', width: 'auto', marginTop: 0 }} onClick={handleFillFraud}>
                         Load Suspicious Transaction
                     </button>
-                    <button type="button" className="btn" style={{ background: 'transparent', border: '1px solid #334155', width: 'auto', marginTop: 0 }} onClick={handleClear}>
+                    <button type="button" className="btn" style={{ background: 'transparent', border: '1px solid var(--border-color)', color: 'var(--text-main)', width: 'auto', marginTop: 0 }} onClick={handleClear}>
                         Clear
                     </button>
                 </div>
