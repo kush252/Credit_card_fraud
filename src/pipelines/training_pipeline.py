@@ -11,6 +11,7 @@ from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import roc_auc_score,f1_score,average_precision_score,confusion_matrix
 from xgboost import XGBClassifier
 import numpy as np
+import pandas as pd
 from config.config import get_config
 
 
@@ -29,8 +30,8 @@ best_name, results = select_best_model(
 
 best_name, best_params = tune_model(best_name, X_train, y_train, X_val, y_val)
 
-X_train_final = np.concatenate([X_train, X_val])
-y_train_final = np.concatenate([y_train, y_val])
+X_train_final = pd.concat([X_train, X_val], axis=0)
+y_train_final = pd.concat([y_train, y_val], axis=0)
 
 print("Best model after tuning:", best_name)
 print("Best parameters after tuning:", best_params)
@@ -78,5 +79,4 @@ metadata = {
 
 save_model(final_model, metadata, "final_model")
 
-save_model(final_model, metadata, "final_model")
 
