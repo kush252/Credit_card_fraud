@@ -1,8 +1,10 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,BackgroundTasks
 from pydantic import BaseModel
 from typing import Dict
 
 from src.pipelines.prediction_pipeline import predict
+from deployment.monitoring.logging import log_prediction
+
 
 app = FastAPI(
     title="Credit Card Fraud Detection API",
@@ -60,11 +62,18 @@ def health_check():
 # -------------------------
 
 @app.post("/predict")
-def fraud_prediction(transaction: TransactionInput):
+def fraud_prediction(transaction: TransactionInput,background_tasks: BackgroundTasks):
 
     input_dict = transaction.model_dump()
 
     prediction, probability = predict(input_dict)
+
+    background_tasks.add_task(
+        log_prediction,
+        input_dict,
+        prediction[0],
+        probability[0]
+    )
 
     return {
         "fraud_prediction": int(prediction[0]),
