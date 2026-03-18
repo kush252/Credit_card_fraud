@@ -3,9 +3,6 @@ create table prediction_logs (
     id bigserial primary key,
     timestamp timestamptz default now(),
 
-    amount double precision,
-    time double precision,
-
     v1 double precision,
     v2 double precision,
     v3 double precision,
@@ -37,7 +34,9 @@ create table prediction_logs (
 
     prediction integer,
     probability double precision,
-    model_version text
+    model_version text,
+    scaled_amount double precision,
+    scaled_time double precision
 );
 
 -- index for time-based queries

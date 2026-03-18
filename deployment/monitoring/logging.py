@@ -14,12 +14,12 @@ supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 def log_prediction(data: dict, prediction: int, probability: float):
     try:
         row = {
-            "amount": data.get("scaled_amount"),
-            "time": data.get("scaled_time"),
             **{f"v{i}": data.get(f"V{i}") for i in range(1, 29)},
             "prediction": int(prediction),
             "probability": float(probability),
             "model_version": MODEL_VERSION,
+            "scaled_amount": data.get("scaled_amount"),
+            "scaled_time": data.get("scaled_time"),
         }
 
         response = supabase.table("prediction_logs").insert(row).execute()
