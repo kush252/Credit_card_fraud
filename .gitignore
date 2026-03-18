@@ -7,3 +7,11 @@ models/*.joblib
 pycache/**/*
 
 node_modules
+.env 
+.pyc
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+data/*.json
+creditcard_scaled_metadata.json

@@ -1,4 +1,4 @@
-from deployment.monitoring.logging import log_prediction
+from deployment.monitoring.utils.logging import log_prediction
 
 sample_data = {
     "amount": 250.0,

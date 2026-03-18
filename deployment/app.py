@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import Dict
 
 from src.pipelines.prediction_pipeline import predict
-from deployment.monitoring.logging import log_prediction
+from deployment.monitoring.utils.logging import log_prediction
 
 
 app = FastAPI(
@@ -47,7 +47,7 @@ class TransactionInput(BaseModel):
     V28: float
     scaled_amount: float
     scaled_time: float
-
+    actual_label: int = None  
 
 # -------------------------
 # Health Check

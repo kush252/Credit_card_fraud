@@ -2,10 +2,10 @@ import pandas as pd
 import json
 from scipy.stats import ks_2samp
 
-from deployment.monitoring.fetch_recent_data import fetch_recent_data
+from deployment.monitoring.utils.fetch_recent_data import fetch_recent_data
 
 
-def data_drift():
+def detect_data_drift():
     recent_data = fetch_recent_data()
 
     with open("data/creditcard_scaled_metadata.json") as f:
@@ -31,8 +31,6 @@ def data_drift():
             "p_value": p_value,
             "drift": drift
         }
-
-        print(f"{feature}: Drift={drift} (p={p_value:.5f})")
 
     return drift_results
 
@@ -61,7 +59,7 @@ def drift_decision(drift_results):
 
 
 if __name__ == "__main__":
-    drift_results = data_drift()
+    drift_results = detect_data_drift()
     decision = drift_decision(drift_results)
 
     print("\nFinal Decision:", decision)
