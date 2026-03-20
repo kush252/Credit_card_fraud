@@ -77,6 +77,6 @@ metadata = {
     }
 }
 
-save_model(final_model, metadata, "final_model")
+save_model(final_model, metadata, "final_model_v1")
 
 

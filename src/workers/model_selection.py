@@ -1,15 +1,12 @@
 from src.utils.dataloader import load_data
 from src.utils.traintestsplit import train_val_test_split
 
-from sklearn.linear_model import LogisticRegression
-from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
 from sklearn.metrics import roc_auc_score, f1_score
 from sklearn.utils.class_weight import compute_class_weight
-from xgboost import XGBClassifier
 import numpy as np
 
 from config.config import get_config
-
+from src.utils.model_creator import create_basic_model
 
 def select_best_model(X_train, y_train, X_val, y_val):
 
@@ -21,16 +18,38 @@ def select_best_model(X_train, y_train, X_val, y_val):
     scale_pos_weight = neg / pos
 
     models = {
-        "logistic_regression": LogisticRegression(max_iter=1000, class_weight="balanced"),
-        "random_forest": RandomForestClassifier(class_weight="balanced"),
-        "gradient_boosting": GradientBoostingClassifier(), 
-        "xgboost": XGBClassifier(use_label_encoder=False, eval_metric='logloss', scale_pos_weight=scale_pos_weight)
+        "logistic_regression": create_basic_model("logistic_regression"),
+        "random_forest": create_basic_model("random_forest"),
+        "gradient_boosting": create_basic_model("gradient_boosting"),
+        "xgboost": create_basic_model("xgboost")
     }
 
     results = {}
     fitted_models = {}
 
     for name, model in models.items():
+        if name == "logistic_regression":
+            model.set_params(
+                max_iter=1000,
+                class_weight="balanced"
+            )
+
+        elif name == "random_forest":
+            model.set_params(
+                class_weight="balanced"
+            )
+
+        elif name == "gradient_boosting":
+            model.set_params()
+            # (no extra params — matches your dict)
+
+        elif name == "xgboost":
+            model.set_params(
+                use_label_encoder=False,
+                eval_metric='logloss',
+                scale_pos_weight=scale_pos_weight
+            )
+
 
         if name == "gradient_boosting":
             sample_weights = np.array([class_weight_dict[label] for label in y_train])
