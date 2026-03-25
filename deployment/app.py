@@ -12,9 +12,6 @@ app = FastAPI(
     version="1.0"
 )
 
-# -------------------------
-# Input Schema
-# -------------------------
 
 class TransactionInput(BaseModel):
     V1: float
@@ -49,17 +46,11 @@ class TransactionInput(BaseModel):
     scaled_time: float
     actual_label: int = None  
 
-# -------------------------
-# Health Check
-# -------------------------
 
 @app.get("/")
 def health_check():
     return {"status": "API running"}
 
-# -------------------------
-# Prediction Endpoint
-# -------------------------
 
 @app.post("/predict")
 def fraud_prediction(transaction: TransactionInput,background_tasks: BackgroundTasks):
