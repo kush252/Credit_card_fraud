@@ -10,6 +10,7 @@ DATA_PATH =os.path.join(PROJECT_ROOT, "data\creditcard_scaled.csv")
 DATA_METADATA_PATH = os.path.join(PROJECT_ROOT, "data\creditcard_scaled_metadata.json")
 MODEL_METADATA_PATH = os.path.join(PROJECT_ROOT, "models\\final_model_metadata.json")
 MODEL_VERSION = os.getenv("MODEL_VERSION", "1")
+DATA_DISTRIBUTION_PATH = os.path.join(PROJECT_ROOT, "data\data_distribution.json")
 os.makedirs(MODELS_DIR, exist_ok=True)
 
 def get_config():
@@ -19,7 +20,8 @@ def get_config():
         "data_metadata_path": DATA_METADATA_PATH,
         "model_name": f"final_model_v{str(MODEL_VERSION)}",
         "model_version": MODEL_VERSION,
-        "model_metadata_path": MODEL_METADATA_PATH
+        "model_metadata_path": MODEL_METADATA_PATH,
+        "data_distribution_path": DATA_DISTRIBUTION_PATH
     }
     return config
 
