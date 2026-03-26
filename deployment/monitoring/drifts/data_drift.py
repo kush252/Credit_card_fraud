@@ -42,14 +42,10 @@ def drift_decision(drift_results):
 
     drift_score = drifted_features / total_features if total_features > 0 else 0
 
-    print(f"\nDrift Score: {drift_score:.2f}")
-
     # decision rule
     if drift_score > 0.3:
-        print("🚨 Drift detected: RETRAIN MODEL")
         decision = "retrain"
     else:
-        print("✅ No significant drift")
         decision = "stable"
 
     return {

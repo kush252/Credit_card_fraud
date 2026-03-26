@@ -1,25 +1,47 @@
 from deployment.monitoring.drifts.data_drift import detect_data_drift, drift_decision
 from deployment.monitoring.drifts.concept_drift import detect_concept_drift
+from deployment.logging.monitoring_logs import monitoring_logs
+from deployment.logging.system_events_logs import system_events_logs
 
+from config.config import get_config    
 def run_monitoring():
-    print("Running Data Drift Detection...")
-    data_drift_results = detect_data_drift()
-    data_drift_decision = drift_decision(data_drift_results)
+    config = get_config()
+    event_status = "completed"
+    try:
+        data_drift_results = detect_data_drift()
+        data_drift_decision = drift_decision(data_drift_results)
 
-    print("\nRunning Concept Drift Detection...")
-    concept_drift_results = detect_concept_drift()
+    except Exception as e:
+        data_drift_decision = {
+        "drift_score": 0,
+        "decision": "error"
+    }
 
-    print("\n=== Monitoring Summary ===")
-    print(f"Data Drift Decision: {data_drift_decision['decision']} (Score: {data_drift_decision['drift_score']:.2f})")
-    print(f"Concept Drift Decision: {concept_drift_results['decision']} (Recall: {concept_drift_results['recall']:.3f})")
+    try:
+        concept_drift_results = detect_concept_drift()
+    except Exception as e:
+        concept_drift_results = {
+        "f1": 0,
+        "decision": "stable"
+    }
 
-    # Overall decision
-    if data_drift_decision['decision'] == "retrain" or concept_drift_results['decision'] == "retrain":
-        print("\n⚠️  OVERALL DECISION: RETRAIN MODEL")
-        return "retrain"
+    if data_drift_decision['decision'] == "error" or concept_drift_results['decision'] == "error":
+        event_status = "error"  
     else:
-        print("\n✅ OVERALL DECISION: MODEL STABLE")
-        return "stable"
+        monitoring_logs(data_drift_decision,concept_drift_results)
+
+    system_events_logs({
+        "event_type": "monitoring_run",
+        "status": event_status,
+        "message": f"Data Drift Decision: {data_drift_decision['decision']}, Concept Drift Decision: {concept_drift_results['decision']}"
+    })
+
+
+
+    if data_drift_decision['decision'] == "retrain" or concept_drift_results['decision'] == "retrain":
+        return "retrain",concept_drift_results['f1'],data_drift_results['drift_score']
+    else:
+        return "stable",concept_drift_results['f1'],data_drift_results['drift_score']
 
 
 if __name__ == "__main__":
