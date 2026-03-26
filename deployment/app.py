@@ -5,6 +5,7 @@ from typing import Dict
 from src.pipelines.prediction_pipeline import predict
 from deployment.monitoring.utils.logging import log_prediction
 from deployment.monitoring_retraining_pipeline import monitoring_retraining_pipeline
+from config.config import get_config
 app = FastAPI(
     title="Credit Card Fraud Detection API",
     description="API for predicting fraudulent credit card transactions",
@@ -45,10 +46,13 @@ class TransactionInput(BaseModel):
     scaled_time: float
     actual_label: int = None  
 
-
 @app.get("/")
-def health_check():
-    return {"status": "API running"}
+def root():
+    return {
+        "status": "running",
+        "service": "fraud-detection-api",
+        "model_version": get_config()["model_version"]
+    }
 
 
 @app.post("/predict")
