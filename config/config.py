@@ -7,9 +7,10 @@ BASE_DIR = os.path.dirname(__file__)
 PROJECT_ROOT = os.path.abspath(os.path.join(BASE_DIR, ".."))
 MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
 DATA_PATH =os.path.join(PROJECT_ROOT, "data\creditcard_scaled.csv")
+MODEL_VERSION = int(os.getenv("MODEL_VERSION", 1))
 DATA_METADATA_PATH = os.path.join(PROJECT_ROOT, "data\creditcard_scaled_metadata.json")
-MODEL_METADATA_PATH = os.path.join(PROJECT_ROOT, "models\\final_model_metadata.json")
-MODEL_VERSION = os.getenv("MODEL_VERSION", "1")
+MODEL_METADATA_PATH = os.path.join(PROJECT_ROOT, f"models\\final_model_v{MODEL_VERSION}_metadata.json")
+
 DATA_DISTRIBUTION_PATH = os.path.join(PROJECT_ROOT, "data\data_distribution.json")
 os.makedirs(MODELS_DIR, exist_ok=True)
 

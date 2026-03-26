@@ -45,9 +45,9 @@ def run_monitoring(run_id):
 
 
     if data_drift_decision['decision'] == "retrain" or concept_drift_results['decision'] == "retrain":
-        return "retrain",concept_drift_results,data_drift_results['drift_score']
+        return "retrain",concept_drift_results,data_drift_decision['drift_score']
     else:
-        return "stable",concept_drift_results,data_drift_results['drift_score']
+        return "stable",concept_drift_results,data_drift_decision['drift_score']
 
 
 if __name__ == "__main__":
