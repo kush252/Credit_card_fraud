@@ -4,8 +4,7 @@ from typing import Dict
 
 from src.pipelines.prediction_pipeline import predict
 from deployment.monitoring.utils.logging import log_prediction
-
-
+from deployment.monitoring_retraining_pipeline import monitoring_retraining_pipeline
 app = FastAPI(
     title="Credit Card Fraud Detection API",
     description="API for predicting fraudulent credit card transactions",
@@ -64,6 +63,9 @@ def fraud_prediction(transaction: TransactionInput,background_tasks: BackgroundT
         input_dict,
         prediction[0],
         probability[0]
+    )
+    background_tasks.add_task(
+        monitoring_retraining_pipeline
     )
 
     return {

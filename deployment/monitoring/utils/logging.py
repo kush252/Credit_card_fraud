@@ -26,3 +26,11 @@ def log_prediction(data: dict, prediction: int, probability: float):
 
     except Exception as e:
         print(f"[LOGGING ERROR]: {e}")
+
+def get_logs_count():
+    try:
+        response = supabase.table("prediction_logs").select("id", count="exact").execute()
+        return response.count
+    except Exception as e:
+        print(f"[LOGGING ERROR]: {e}")
+        return 0

@@ -27,7 +27,7 @@ def detect_concept_drift():
     print(f"Recall: {recall:.3f}")
     print(f"F1 Score: {f1:.3f}")
 
-    if recall < 0.80:
+    if f1 < 0.60:
         print("🚨 Concept drift detected: RETRAIN MODEL")
         return {
             "recall": recall,
