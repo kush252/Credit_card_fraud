@@ -7,7 +7,7 @@ import uuid
 config = get_config()
 MODEL_VERSION = config["model_version"]
 MODEL_URL = os.getenv("MODEL_URL") 
-MODEL_PATH = config["model_path"] 
+MODEL_PATH = config["model_folder"] 
 
 def download_model(run_id=None):
     model_path = MODEL_PATH + f"final_model_v{MODEL_VERSION}.joblib"
