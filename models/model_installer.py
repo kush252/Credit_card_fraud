@@ -6,13 +6,13 @@ import uuid
 
 config = get_config()
 MODEL_VERSION = config["model_version"]
-MODEL_URL = os.getenv("MODEL_URL") 
-MODEL_PATH = config["model_folder"] 
+MODEL_URL = str(os.getenv("MODEL_URL")) 
+MODEL_PATH = str(config["model_folder"] + "/")
 
 def download_model(run_id=None):
     model_path = MODEL_PATH + f"final_model_v{MODEL_VERSION}.joblib"
-    model_url = MODEL_URL + f"_final_model_v{MODEL_VERSION}.joblib"
-    model_metadata_path = config["model_metadata_path"] + f"_v{MODEL_VERSION}.json"
+    model_url = MODEL_URL + f"final_model_v{MODEL_VERSION}.joblib"
+    model_metadata_path = config["model_metadata_path"]
     model_metadata_url = MODEL_URL + f"final_model_v{MODEL_VERSION}_metadata.json"
     if not run_id:
         run_id = str(uuid.uuid4())
