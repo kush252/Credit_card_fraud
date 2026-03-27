@@ -2,7 +2,7 @@ import requests
 import json
 
 # API endpoint
-URL = "http://127.0.0.1:8000/predict"
+URL = "https://credit-card-fraud-rrzz.onrender.com/predict"
 
 # Test input
 data = {

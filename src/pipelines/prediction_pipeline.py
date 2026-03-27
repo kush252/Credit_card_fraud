@@ -7,9 +7,8 @@ from config.config import get_config
 config = get_config()
 MODEL_NAME = config["model_name"]
 DATA_METADATA_PATH= config["data_metadata_path"]
-def predict(inputs:dict):
-    
-    model, metadata = load_model(MODEL_NAME)
+
+def predict(inputs:dict,model, metadata):
     data_metadata = json.load(open(DATA_METADATA_PATH))
     data_columns = data_metadata["columns"]
     filtered_data = {
