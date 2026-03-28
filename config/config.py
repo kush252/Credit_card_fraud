@@ -9,9 +9,10 @@ MODELS_DIR = os.path.join(PROJECT_ROOT, "models")
 DATA_PATH =os.path.join(PROJECT_ROOT, "data", "creditcard_scaled.csv")
 MODEL_VERSION = int(os.getenv("MODEL_VERSION", 1))
 DATA_METADATA_PATH = os.path.join(PROJECT_ROOT, "data", "creditcard_scaled_metadata.json")
-MODEL_METADATA_PATH = os.path.join(PROJECT_ROOT, f"models{os.sep}final_model_v{MODEL_VERSION}_metadata.json")
-
+MODEL_METADATA_PATH = os.path.join(PROJECT_ROOT, f"models/final_model_v{MODEL_VERSION}_metadata.json")
 DATA_DISTRIBUTION_PATH = os.path.join(PROJECT_ROOT, "data", "data_distribution.json")
+
+
 os.makedirs(MODELS_DIR, exist_ok=True)
 
 def get_config():
