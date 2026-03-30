@@ -12,6 +12,7 @@ MODEL_VERSION = config["model_version"]
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def system_events_logs(data, run_id):
+    response = None
     try:
         response = supabase.table("system_events").insert({
             "run_id": run_id,

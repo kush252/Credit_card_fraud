@@ -15,45 +15,57 @@ from src.utils.model_creator import create_basic_model
 from deployment.logging.retraining_logs import retraining_logs
 from deployment.logging.system_events_logs import system_events_logs
 
+import logging
 
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 def increment_model_version(env_path=".env"):
 
     current_version = int(os.getenv("MODEL_VERSION", 1))
     new_version = current_version + 1
+    
+    # Update current session environment variables
+    os.environ["MODEL_VERSION"] = str(new_version)
 
-    with open(env_path, "r") as f:
-        lines = f.readlines()
+    # Only update the actual file if it exists (for local development, ignore in Docker)
+    if os.path.exists(env_path):
+        try:
+            with open(env_path, "r") as f:
+                lines = f.readlines()
 
-    with open(env_path, "w") as f:
-        found = False
-        for line in lines:
-            if line.startswith("MODEL_VERSION="):
-                f.write(f"MODEL_VERSION={new_version}\n")
-                found = True
-            else:
-                f.write(line)
+            with open(env_path, "w") as f:
+                found = False
+                for line in lines:
+                    if line.startswith("MODEL_VERSION="):
+                        f.write(f"MODEL_VERSION={new_version}\n")
+                        found = True
+                    else:
+                        f.write(line)
 
-        if not found:
-            f.write(f"\nMODEL_VERSION={new_version}\n")
+                if not found:
+                    f.write(f"\nMODEL_VERSION={new_version}\n")
+        except Exception as e:
+            logger.warning(f"Could not write to {env_path}: {e}")
 
     return new_version
 
 
 def retrain_model(metrics_before:dict, data_drift_score:float,run_id=None):
+    
     config = get_config()
     current_version = int(os.getenv("MODEL_VERSION", 1))
     version = current_version + 1
-
+    logger.info(f"Retraining model with version {version}...")
     if not run_id:
         run_id = str(uuid.uuid4())
     data = load_retraining_data()
-
+    data = data.dropna(subset=["Class"])
     X = data.drop(columns=["Class"])
     y = data["Class"]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-    
+    logger.info(f"Data split into training and testing sets.")
     dataset_size = len(data)
     retraining_triggered = False
     status = "retraining_started"
@@ -69,6 +81,7 @@ def retrain_model(metrics_before:dict, data_drift_score:float,run_id=None):
         past_model_metadata = json.load(open(config["model_metadata_path"]))
         model_name = past_model_metadata.get("model_name", "random_forest")
         hyperparameters = past_model_metadata.get("hyperparameters", {})
+        logger.info(f"Loaded past model metadata: {past_model_metadata}")
     except Exception as e:
         model_name = "random_forest"
         hyperparameters = {}
@@ -82,6 +95,8 @@ def retrain_model(metrics_before:dict, data_drift_score:float,run_id=None):
     
     model = create_basic_model(model_name)
     model.set_params(**hyperparameters)
+    logger.info(f"Model created with parameters: {hyperparameters}")
+
 
     try:
         model.fit(X_train, y_train)
@@ -93,7 +108,9 @@ def retrain_model(metrics_before:dict, data_drift_score:float,run_id=None):
             "status": status,
             "message": message
         }, run_id)
+        logger.info("Model retrained successfully.")
     except Exception as e:
+        logger.error(f"Error fitting model during retraining: {e}", exc_info=True)
         status = f"retraining_failed: {str(e)}"
         message = f"Model retraining failed due to error: {str(e)}"
         system_events_logs({
@@ -102,7 +119,6 @@ def retrain_model(metrics_before:dict, data_drift_score:float,run_id=None):
             "message": message
         }, run_id)
         return None, None
-
     predicted = model.predict(X_test)
     proba = model.predict_proba(X_test)[:, 1]
 
@@ -140,7 +156,9 @@ def retrain_model(metrics_before:dict, data_drift_score:float,run_id=None):
             "status": status,
             "message": message
         }, run_id)
+        logger.info("Model saved and new version written to .env")
     except Exception as e:
+        logger.error(f"Error saving model or incrementing model version: {e}", exc_info=True)
         status = f"model_saving_failed: {str(e)}"
         message = f"Model saving failed due to error: {str(e)}"
         system_events_logs({

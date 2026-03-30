@@ -8,6 +8,7 @@ config = get_config()
 MODELS_DIR = config["model_folder"]
 
 def save_model(model, metadata: dict, model_name: str):
+    os.makedirs(MODELS_DIR, exist_ok=True)
     model_path = os.path.join(MODELS_DIR, f"{model_name}.joblib")
     metadata_path = os.path.join(MODELS_DIR, f"{model_name}_metadata.json")
 

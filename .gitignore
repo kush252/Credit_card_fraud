@@ -13,5 +13,3 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-data/*.json
-creditcard_scaled_metadata.json

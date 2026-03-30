@@ -160,10 +160,10 @@ def install_all(run_id=None):
     
     try:
         download_model(run_id)
-        download_data_files(run_id)
+        # download_data_files(run_id)
         
         status = "completed"
-        message = "All model and data files downloaded."
+        message = "model downloaded."
         system_events_logs({
             "event_type": event_type,
             "status": status,

@@ -1,24 +1,50 @@
 import pandas as pd
-import json
 from scipy.stats import ks_2samp
+from supabase import create_client
+import os
+from dotenv import load_dotenv
 
 from deployment.monitoring.utils.fetch_recent_data import fetch_recent_data
+
+load_dotenv()
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+
+
+def load_reference_data():
+    """Fetch original training dataset from Supabase"""
+    try:
+        response = supabase.table("training_data").select("*").execute()
+        reference_df = pd.DataFrame(response.data)
+        return reference_df
+    except Exception as e:
+        print(f"Error loading reference data from database: {str(e)}")
+        raise e
 
 
 def detect_data_drift():
     recent_data = fetch_recent_data()
-
-    with open("data/creditcard_scaled_metadata.json") as f:
-        metadata = json.load(f)
-
-    feature_stats = metadata["feature_stats"]
-    features = list(feature_stats.keys())
+    reference_data = load_reference_data()
+    
+    features = [col for col in reference_data.columns if col != "Class"]
 
     drift_results = {}
 
     for feature in features:
-        reference_values = feature_stats[feature]["values"]
-        current_values = recent_data[feature.lower()].dropna().tolist()
+        reference_values = reference_data[feature].dropna().tolist()
+        
+        # safely find column name in recent_data
+        recent_col = feature.lower()
+        if recent_col == "time" and "scaled_time" in recent_data.columns:
+            recent_col = "scaled_time"
+        elif recent_col == "amount" and "scaled_amount" in recent_data.columns:
+            recent_col = "scaled_amount"
+            
+        if recent_col not in recent_data.columns:
+            continue
+            
+        current_values = recent_data[recent_col].dropna().tolist()
 
         if len(current_values) < 5:
             continue

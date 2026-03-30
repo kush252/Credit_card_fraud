@@ -6,7 +6,7 @@ from src.pipelines.prediction_pipeline import predict
 from deployment.monitoring.utils.logging import log_prediction
 from deployment.monitoring_retraining_pipeline import monitoring_retraining_pipeline
 from config.config import get_config
-from models.model_installer import download_model
+from models.model_installer import install_all
 import os
 from src.utils.model_load_save import load_model
 
@@ -57,7 +57,7 @@ async def lifespan(app: FastAPI):
     global model
     global metadata
 
-    download_model()
+    install_all()
     model, metadata = load_model(MODEL_NAME)
     yield
 
