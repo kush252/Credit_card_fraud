@@ -1,0 +1,23 @@
+{
+    "model_name": "gradient_boosting",
+    "hyperparameters": {
+        "n_estimators": 313,
+        "learning_rate": 0.013911053916202464,
+        "max_depth": 10
+    },
+    "test_metrics": {
+        "roc_auc": 0.9194766840546196,
+        "f1_score": 0.7633587786259542,
+        "pr_auc": 0.7084894835789466,
+        "confusion_matrix": [
+            [
+                42478,
+                10
+            ],
+            [
+                21,
+                50
+            ]
+        ]
+    }
+}

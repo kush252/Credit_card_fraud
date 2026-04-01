@@ -1,0 +1,12 @@
+{
+    "model_name": "Logistic Regression",
+    "hyperparameters": {
+        "max_iter": 1000,
+        "class_weight": "balanced",
+        "random_state": 42
+    },
+    "validation_metrics": {
+        "roc_auc": 0.9718225328245126,
+        "f1_score": 0.09596344249809596
+    }
+}

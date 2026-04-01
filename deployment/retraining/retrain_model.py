@@ -65,6 +65,11 @@ def retrain_model(metrics_before:dict, data_drift_score:float,run_id=None):
     X = data.drop(columns=["Class"])
     y = data["Class"]
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    # Remove any remaining NaN values
+    X_train = X_train.dropna()
+    y_train = y_train[X_train.index]
+    
     logger.info(f"Data split into training and testing sets.")
     dataset_size = len(data)
     retraining_triggered = False

@@ -42,17 +42,17 @@ def download_model(run_id=None):
 
     try:
         r = requests.get(model_url)
-        rm = requests.get(model_metadata_url)
+        # rm = requests.get(model_metadata_url)
         r.raise_for_status()
-        rm.raise_for_status()
+        # rm.raise_for_status()
 
         os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
 
         with open(model_path, "wb") as f:
             f.write(r.content)
 
-        with open(model_metadata_path, "wb") as f:
-            f.write(rm.content)
+        # with open(model_metadata_path, "wb") as f:
+        #     f.write(rm.content)
 
         status = "completed"
         message = f"Model download completed for version {MODEL_VERSION}. Model saved to: {model_path}. Metadata saved to: {model_metadata_path}."
@@ -71,7 +71,7 @@ def download_model(run_id=None):
         }, run_id)
         raise e
 
-
+#function call commented metadata can be directly taken from local.
 def download_data_files(run_id=None):
     """Download data files (CSV and metadata) from remote storage"""
     if not run_id:
