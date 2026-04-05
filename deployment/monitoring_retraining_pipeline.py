@@ -14,7 +14,7 @@ def monitoring_retraining_pipeline():
         logger.info("Starting monitoring and retraining pipeline...")
         logs_count = get_logs_count()
         logger.info(f"Current prediction logs count: {logs_count}")
-        if logs_count <= 10:
+        if logs_count <= 5000:
             logger.info("Not enough logs (<=10) to run monitoring. Exiting pipeline.")
             return 
         

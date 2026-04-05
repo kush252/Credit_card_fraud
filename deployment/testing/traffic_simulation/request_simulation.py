@@ -1,14 +1,16 @@
 import requests
 import time
 import json
+import os
 from deployment.testing.traffic_simulation.data_generation import simulation_data_generation
 
-API_URL = "http://127.0.0.1:8000/predict"
+# Get API endpoint from environment variable
+API_URL = os.getenv("API_URL")
 
 
 def send_request(sample):
     try:
-        response = requests.post(API_URL, json=sample, timeout=30)
+        response = requests.post(API_URL, json=sample, timeout=90)
 
         return {
             "status_code": response.status_code,

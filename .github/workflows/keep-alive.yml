@@ -1,0 +1,56 @@
+name: Keep Alive - Supabase Health Check
+
+on:
+  schedule:
+    # Run every 5 days to keep Supabase active
+    - cron: '0 0 */5 * *'
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+        cache: 'pip'
+
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r keep-alive-requirements.txt
+
+    - name: Run Health Check Simulation
+      env:
+        SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+        SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        API_URL: ${{ secrets.DEPLOYED_WEB_URL }}
+      run: |
+        python -c "
+        import sys
+        sys.path.insert(0, '.')
+        from deployment.testing.traffic_simulation.request_simulation import run_simulation
+        
+        try:
+          result = run_simulation(delay=1)
+          print(f'Health check completed: {result}')
+          if result.get('status_code') != 200:
+            print(f'Warning: API returned status code {result.get(\"status_code\")}')
+            sys.exit(1)
+        except Exception as e:
+          print(f'Health check failed: {str(e)}')
+          sys.exit(1)
+        "
+
+    - name: Log Success
+      if: success()
+      run: echo "✓ Keep-alive request sent successfully at $(date)"
+
+    - name: Log Failure
+      if: failure()
+      run: echo "✗ Keep-alive request failed at $(date)"
