@@ -9,6 +9,7 @@ from config.config import get_config
 from models.model_installer import install_all
 import os
 from src.utils.model_load_save import load_model
+from datetime import datetime
 
 from contextlib import asynccontextmanager
 
@@ -75,6 +76,18 @@ def root():
     return {
         "status": "running",
         "service": "fraud-detection-api",
+        "model_version": get_config()["model_version"]
+    }
+
+
+@app.get("/health")
+def health_check():
+    """Health check endpoint to verify CD pipeline deployment"""
+    return {
+        "status": "healthy",
+        "service": "fraud-detection-api",
+        "timestamp": datetime.utcnow().isoformat(),
+        "model_loaded": model is not None,
         "model_version": get_config()["model_version"]
     }
 

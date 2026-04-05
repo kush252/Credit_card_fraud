@@ -29,3 +29,6 @@ jobs:
         tags: |
           ${{ secrets.DOCKER_USERNAME }}/fraud-api:latest
           ${{ secrets.DOCKER_USERNAME }}/fraud-api:${{ github.sha }}
+
+    - name: Trigger Render Deployment
+      run: curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK }}
