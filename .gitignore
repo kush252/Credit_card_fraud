@@ -2,7 +2,6 @@ venv
 scaler.pkl
 data/*.csv
 models/*.pkl
-models/*.json
 models/*.joblib
 pycache/**/*
 
@@ -13,3 +12,4 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
+desktop.ini
